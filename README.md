@@ -20,15 +20,27 @@ Information shared over radio includes location, speed, heading and optionally a
 
 To use the name / callsign broadcasting feature, attack a MNS Text Encoder to enter the hosting vessel's name.
 
-![alt text](https://github.com/Gjorsi/SW_ModularNavSystem/blob/master/Pictures/MNS screenshot.png?raw=true "Modular Navigation System screen")
+![alt text](https://github.com/Gjorsi/SW_ModularNavSystem/blob/master/Pictures/MNS_screenshot.png "Modular Navigation System screen")
+
+Modular Navigation System screen
+
 
 ## MNS Text Encoder
 Displays a keyboard on screen such that user can type input to the MNS 03 AIS module.
 Encodes text and numbers to the limited 32-bit output which can be decoded by the MNS. 
 Press ENT to send the input to AIS.
 
-![alt text](https://github.com/Gjorsi/SW_ModularNavSystem/blob/master/Pictures/Text Encoder scrnshot.png?raw=true "Text Encoder")
+![alt text](https://github.com/Gjorsi/SW_ModularNavSystem/blob/master/Pictures/Text_Encoder_scrnshot.png "Text Encoder")
 
-![alt text](https://github.com/Gjorsi/SW_ModularNavSystem/blob/master/Pictures/MNS%2002%20Autopilot%20Connections.png?raw=true "Signal connection view of Autopilot module")
+Text Encoder
 
-![alt text](https://github.com/Gjorsi/SW_ModularNavSystem/blob/master/Pictures/MNS 02 Autopilot properties.png?raw=true "Properties settings of Autopilot module")
+
+![alt text](https://github.com/Gjorsi/SW_ModularNavSystem/blob/master/Pictures/MNS_02_Autopilot_Connections.png "Signal connection view of Autopilot module")
+
+Signal connection view of Autopilot module
+
+
+![alt text](https://github.com/Gjorsi/SW_ModularNavSystem/blob/master/Pictures/MNS_02_Autopilot_properties.png "Properties settings of Autopilot module")
+
+Properties settings of Autopilot module
+
