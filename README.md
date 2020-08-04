@@ -4,13 +4,15 @@ Stormworks is a simulator game where you design and pilot your own sea-rescue se
 This system was created by in-game scripting using the programming language Lua. 
 Note that the game restricts scripts to 4096 characters of code due to multiplayer network limitations, which means for complex scripts, variable names must be shortened and comments left out.
 
+Steam Workshop collection [link](https://steamcommunity.com/sharedfiles/filedetails/?id=2187095769)
+
 ## MNS 01 Map module
 This is the base module, needed for any of the others to work.
-It provides an interactive map with location data of the hosting vehicle, and a speed / heading vector.
+It provides an interactive map with location data of the hosting vehicle, and a speed / heading vector. The interface has day and night mode. 
 
 ## MNS 02 Autopilot module
-This module can be added as a layer on top of module 01 Map.
-Now you can click and hold on the map to set waypoints, which the module will navigate through using throttle and rudder control. Note that throttle and rudder control must have a switchbox operated by the module's Autopilot boolean output. Properties can be changed to limit the use of throttle between 0 and 1.
+This module adds an autopilot feature as a layer to the base module MNS 01 Map.
+Now you can click and hold on the map to set waypoints, which the module will navigate through using throttle and rudder control. Note that throttle and rudder control must have a switchbox operated by the module's Autopilot boolean output. Properties can be changed to limit the maximum use of throttle or to change the acceleration, deceleration and rudder sensitivity. 
 
 ## MNS 03 AIS module
 This module adds AIS as a layer to the base module MNS 01 Map.
@@ -18,7 +20,7 @@ Vessels using this module share their navigational data over radio communication
 
 Information shared over radio includes location, speed, heading and optionally a name / callsign. The information will be displayed on participating units' screens as tracks with speed / heading vectors. The tracks change colors and fade out as connection is lost, to show the user how up-to-date the information on screen is.
 
-To use the name / callsign broadcasting feature, attack a MNS Text Encoder to enter the hosting vessel's name.
+To use the name / callsign broadcasting feature, attach a MNS Text Encoder to enter the hosting vessel's name.
 
 ![alt text](https://github.com/Gjorsi/SW_ModularNavSystem/blob/master/Pictures/MNS_screenshot.png "Modular Navigation System screen")
 
