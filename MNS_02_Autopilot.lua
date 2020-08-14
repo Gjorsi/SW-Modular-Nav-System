@@ -36,9 +36,9 @@ function onTick()
     if io.gB(1) then
       tX = io.gN(3)
       tY = io.gN(4)
-      if tC(w-23,0,w-10,8) and hl>50 then AP=not AP;ru=0;ttl=0;hl=0
+      if tC(w-23,0,w-10,8) and hl>30 then AP=not AP;ru=0;ttl=0;hl=0
       elseif tC(w-11,0,w-3,8) and hl>50 then nWP=0;hl=0;stop()
-      elseif hl>60 then
+      elseif hl>40 and (tC(6,6,w-6,h-7) or tC(0,6,w,(h/2)-4)) then
         wPb=true;nWP=math.min(nWP+1,8)
         if nWP>0 and nWP<9 then arr[nWP].x,arr[nWP].y=map.screenToMap(cX,cY,zoom,w,h,tX,tY) end
         hl=0
@@ -93,8 +93,8 @@ function setRu()
 end
 
 function setTh()
-  if nWP>1 then tuTh=math.max(mT-mT*(diff/75),mT/4)
-  else tuTh=math.max(mT-mT*(diff/60),mT/8) end
+  if nWP>1 then tuTh=math.max(mT-mT*(diff/160),mT/4)
+  else tuTh=math.max(mT-mT*(diff/120),mT/6) end
   if t.d>250 then dTh=mT
   elseif t.d<=250 and t.d>50 then dTh=t.d*(mT/200)
   else dTh=0 end
