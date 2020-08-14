@@ -30,7 +30,7 @@ function onTick()
     else hdD = 360-hd*360 end
     
     send(txF)
-    rcv(txF)
+    rcv()
     io.sN(1,rxF)
     io.sN(2,txF)
     
@@ -91,19 +91,16 @@ function rcv()
   if rid == 0 then
     if cont[rxF] ~= nil then
       cont[rxF].age = cont[rxF].age+1
-      if cont[rxF].age > 500 then cont[rxF] = nil end
+      if cont[rxF].age > 240 then cont[rxF] = nil end
     end
   else
+    rname={io.gN(13),io.gN(14),io.gN(15),io.gN(16)}
     if cont[rid] == nil then
-      rname={io.gN(13),io.gN(14),io.gN(15),io.gN(16)}
-      if rname[1] == 0 then
-        addC(rX,rY,rid,rsp,rhd)
-      else
-        addC(rX,rY,rid,rsp,rhd,dec(rname))
-      end
+      addC(rX,rY,rid,rsp,rhd)
     else
       updC(rid,rX,rY,rsp,rhd)
     end
+    if rname[1] ~= 0 then cont[rid].name = dec(rname) end
   end
   incrRX()
 end
@@ -170,13 +167,13 @@ function onDraw()
     else
       s.sc(80,0,0,150)
       if h>64 and name then s.dt(4,h-7,"N: "..name) end
-      s.dt(center.x+4,h-6,"ID"..txF)
+      s.dt(center.x+4,h-6,string.format("ID%d",txF))
   
       for k,c in pairs(cont) do
         dX,dY = m.ms(cX,cY,zoom,w,h,c.x,c.y)
-        if c.age <=1 then
+        if c.age <=2 then
           s.sc(0,70,0,200)
-        elseif c.age <= 30 then
+        elseif c.age <= 20 then
           s.sc(50,50,0,200)
         else
           s.sc(50,0,0,200)
