@@ -61,8 +61,9 @@ function init()
   addBtn(2*f+7,h-7,5,6,"O",function() ce=true end, true,true,true)
   addBtn(2*f+13,h-7,6,6,"+",function() zoom=math.max(0.1,zoom-zF) end, true,false,true)
   addBtn(2*f,0,15,6,"D/N",function() day=not day;chng=true end, false,true,true)
-  addBtn(0,6,w,h-13,"",function() moveMap() end, false, true, false)
-  addBtn(0,0,c.x+3*f,h,"",function() moveMap() end, false, true, false)
+  addBtn(0,7,w,h-15,"",function() moveMap() end, false, true, false)
+  addBtn(0,0,w-23,c.y+1,"",function() moveMap() end, false, true, false)
+  addBtn(0,c.y,w-15,c.y,"",function() moveMap() end, false, true, false)
 end
 
 function moveMap()

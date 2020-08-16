@@ -96,8 +96,8 @@ function init()
 	ini=true;c={x=w/2,y=h/2};f=h/32
   for i=1,8 do arr[i]={x=0,y=0} end
   buttons={}
-  addBtn(w-18,h-7,18,6,"WP",function() addWP() end,0,true)
-  addBtn(w-23,0,13,6,"AP",function() AP=not AP;ru=0;ttl=0;hl=0 end,30,true)
+  addBtn(w-14,h-7,12,6,"WP",function() addWP() end,0,true)
+  addBtn(w-22,0,12,6,"AP",function() AP=not AP;ru=0;ttl=0;hl=0 end,30,true)
   addBtn(w-11,0,8,6,"X",function() nWP=0;hl=0;stop() end,50,true)
 end
 
@@ -126,7 +126,7 @@ function onDraw()
       end
     end
     
-    if AP then s.sc(0,100,0,150);s.dr(w-23,0,13,6) end
+    if AP then s.sc(0,100,0,150);s.dr(w-22,0,12,6) end
 
     if wPb then
       for i=1,nWP do
