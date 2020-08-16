@@ -57,14 +57,19 @@ function init()
   c={x=w/2,y=h/2}
   f=h/32
   buttons={}
-  addBtn(0,c.y-4,6,6,"",function() ce=false;cX=cX-d*zoom end, false,false,false)
-  addBtn(c.x-3,0,6,6,"",function() ce=false;cY=cY+d*zoom end, false,false,false)
-  addBtn(w-7,c.y-4,6,6,"",function() ce=false;cX=cX+d*zoom end, false,false,false)
-  addBtn(c.x-3,h-7,6,6,"",function() ce=false;cY=cY-d*zoom end, false,false,false)
-  addBtn(0,h-8*f-1,5,6,"O",function() ce=true end, true,true,true)
-  addBtn(0,h-8*f-8,6,6,"+",function() zoom=math.max(0.1,zoom-zF) end, true,false,true)
-  addBtn(0,h-8*f+6,6,6,"-",function() zoom=math.min(20,zoom+zF) end, true,false,true)
-  addBtn(1,1,15,6,"D/N",function() day=not day;chng=true end, false,true,true)
+  addBtn(2*f,h-7,6,6,"-",function() zoom=math.min(20,zoom+zF) end, true,false,true)
+  addBtn(2*f+7,h-7,5,6,"O",function() ce=true end, true,true,true)
+  addBtn(2*f+13,h-7,6,6,"+",function() zoom=math.max(0.1,zoom-zF) end, true,false,true)
+  addBtn(2*f,0,15,6,"D/N",function() day=not day;chng=true end, false,true,true)
+  addBtn(0,6,w,h-13,"",function() moveMap() end, false, true, false)
+  addBtn(0,0,c.x+3*f,h,"",function() moveMap() end, false, true, false)
+end
+
+function moveMap()
+  ce=false
+  worldX, worldY = map.screenToMap(cX, cY, zoom, w, h, tX, tY)
+  cX=worldX
+  cY=worldY
 end
 
 function addBtn(x,y,w,h,t,f,r,hold,d)
@@ -88,8 +93,10 @@ function inrange(cx, cy, x, y, w, h)
 end
 
 function screenClk(x, y,click)
+  lock=false
 	for k,b in pairs(buttons) do
-		if inrange(x,y,b.x,b.y,b.w,b.h) and click then
+		if inrange(x,y,b.x,b.y,b.w,b.h) and click and not lock then
+      lock=true
       if b.hold and not b.p then
         b.f(b)
       elseif not b.hold then
@@ -119,12 +126,6 @@ function onDraw()
   if showVector then
     screen.drawLine(pX, pY, pX+vX, pY-vY)
   end
-  
-  -- map move arrows
-  s.dtf(0,c.y,3,c.y-3,3,c.y+3) --left
-  s.dtf(c.x-2,3,c.x,0,c.x+3,3) --up
-  s.dtf(w-3,c.y-3,w,c.y,w-3,c.y+3) --right
-  s.dtf(c.x-3,h-3,c.x+4,h-3,c.x,h+1) --down
   
   for k,b in pairs(buttons) do
     if b.d then
