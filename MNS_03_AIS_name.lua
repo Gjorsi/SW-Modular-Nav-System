@@ -131,7 +131,7 @@ function addC(x,y,id,speed,hd,name)
     ['id']=(id),
 		['speed']=(speed or 0),
 		['hd']=(hd or 0),
-		['name']=(name or "Unknown"),
+		['name']=(name or "UNK"),
     ['age']=(0)
 	}
 	cont[id]=data
