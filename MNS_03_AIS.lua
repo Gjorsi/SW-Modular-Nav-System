@@ -166,8 +166,7 @@ function onDraw()
       s.dt(f,center.y-f,"Invalid ID")
     else
       s.sc(80,0,0,150)
-      if h>64 and name then s.dt(4,h-7,"N: "..name) end
-      s.dt(center.x+4,h-6,string.format("ID%d",txF))
+      if h>64 and name then s.dt(center.x-6*f,1,"C/S: "..name) end
   
       for k,c in pairs(cont) do
         dX,dY = m.ms(cX,cY,zoom,w,h,c.x,c.y)
