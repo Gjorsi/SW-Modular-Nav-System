@@ -1,6 +1,6 @@
 ini,ce,day,chng,on = false,true,false,false,false
 headD,spV,zoom,head=0,0,0.5,0
-vX,vY,cX,cY,cT,d,zF,sp,mSp = 0,0,0,0,0,10,0.03,0,10
+vX,vY,cX,cY,nX,nY,cT,d,zF,sp,mSp = 0,0,0,0,0,0,0,10,0.03,0,10
 io={}
 io.gN,io.gB,io.sN,io.sB=input.getNumber,input.getBool,output.setNumber,output.setBool
 s={}
@@ -13,41 +13,38 @@ function onTick()
   
 	if ini and on then
     showVector=io.gB(4)
-  
-    gX=io.gN(7)
-    gY=io.gN(8)
-    sp=io.gN(9)
-    head=io.gN(10)
+    gX=io.gN(7);gY=io.gN(8)
+    sp=io.gN(9);head=io.gN(10)
     click=io.gB(1)
     mSp=property.getNumber("speed vector max speed")
     
-    if ce then cX=gX;cY=gY end
+    if ce then nX=gX;nY=gY end
+    
+    if cX>nX then cX=cX-(cX-nX)/10
+    elseif cX<nX then cX=cX+(nX-cX)/10 end
+    if cY>nY then cY=cY-(cY-nY)/10
+    elseif cY<nY then cY=cY+(nY-cY)/10 end
     
     tX,tY=io.gN(3),io.gN(4)
     screenClk(tX,tY,click)
     
     spV = sp/mSp
   
-    headInputToDegrees(head)
+    toDeg(head)
     
     spV=spV*(h*2/5)
     vX=math.sin(math.rad(headD))
     vY=math.cos(math.rad(headD))
     vX=vX*spV;vY=vY*spV
     
-    io.sN(1,cX)
-    io.sN(2,cY)
-    io.sN(3,zoom)
+    io.sN(1,cX);io.sN(2,cY);io.sN(3,zoom)
   end
 end
 
-function headInputToDegrees(head)
-  if head < 0 then
-    headD = (math.abs(head))*360
-  elseif head == 0 then
-    headD = 0
-  else
-    headD = 360-head*360
+function toDeg(head)
+  if head < 0 then headD = (math.abs(head))*360
+  elseif head == 0 then headD = 0
+  else headD = 360-head*360
   end
 end
 
@@ -68,9 +65,7 @@ end
 
 function moveMap()
   ce=false
-  worldX, worldY = map.screenToMap(cX, cY, zoom, w, h, tX, tY)
-  cX=worldX
-  cY=worldY
+  nX,nY = map.screenToMap(cX, cY, zoom, w, h, tX, tY)
 end
 
 function addBtn(x,y,w,h,t,f,r,hold,d)
