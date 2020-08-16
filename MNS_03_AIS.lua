@@ -1,51 +1,74 @@
-ini=false
-on=false
+ini,ini,extID,dNames=false,false,false,false
 io={}
-io.gN,io.gB,io.sN,io.sB=input.getNumber,input.getBool,output.setNumber,output.setBool
+io.gN,io.gB,io.sN=input.getNumber,input.getBool,output.setNumber
 s={}
-s.drf,s.dr,s.dtf,s.dt,s.dtb,s.sc,s.dl=screen.drawRectF,screen.drawRect,screen.drawTriangleF,screen.drawText,screen.drawTextBox,screen.setColor,screen.drawLine
+s.dr,s.dt,s.sc,s.dl=screen.drawRect,screen.drawText,screen.setColor,screen.drawLine
 m={ms=map.mapToScreen}
-rxFreq=201
-txFreq=0
-extID=false
+rxF=201
+txF=0
+ti=0
+rec={0,0,0,0}
+n={0,0,0,0}
+alphabet={'Q','W','E','R','T','Y','U','I','O','P','A','S','D','F','G','H','J','K','L','Z','X','C','V','B','N','M'}
 
 function onTick()
   on=io.gB(1)
-  if not extID then txFreq = io.gN(14) end
+  if not extID then txF = io.gN(17) end
   
   if on and ini then
+
     cX,cY=io.gN(1),io.gN(2)
     zoom=io.gN(3)
     gX,gY=io.gN(4),io.gN(5)
     speed = io.gN(6)
-    heading = io.gN(7)
+    hd = io.gN(7)
+    dNames = io.gB(2)
     
+    -- convert heading to degrees
+    if hd < 0 then hdD = (math.abs(hd))*360
+		elseif hd == 0 then hdD = 0
+    else hdD = 360-hd*360 end
     
-    if heading < 0 then
-			headD = (math.abs(heading))*360
-		elseif heading == 0 then
-      headD = 0
-    else
-			headD = 360-heading*360
-		end
+    send(txF)
+    rcv()
+    io.sN(1,rxF)
+    io.sN(2,txF)
     
-    send(txFreq)
-    receive(txFreq)
-    io.sN(1,rxFreq)
-    io.sN(2,txFreq)
-    
-    extTXFreq = io.gN(15)
-    if extTXFreq >= 201 and extTXFreq <= 230 and isInteger(extTXFreq) then
+    extTXFreq = io.gN(18)
+    if extTXFreq >= 201 and extTXFreq <= 230 and isInt(extTXFreq) then
       extID=true
-      txFreq = extTXFreq
-      if rxFreq == txFreq then incrementRX() end
+      txF = extTXFreq
+      if rxF == txF then incrRX() end
     else
       extID=false
     end
     
+    rec[1]=io.gN(19)
+    if rec[1]>0 then
+      rec[2]=io.gN(20)
+      rec[3]=io.gN(21)
+      rec[4]=io.gN(22)
+      for i=1,4 do
+        n[i]=rec[i]
+      end
+      name=dec(rec)
+    end
   else
     io.sN(5,0)
   end
+end
+
+function dec(arr)
+  local decoded=""
+  for i=1,4 do
+    if arr[i] > 0 then
+      r = string.format("%d",arr[i])
+      for j=1,#r,2 do
+      decoded = decoded..deco[tonumber(r:sub(j,j+1))]
+      end
+    end
+  end
+  return decoded
 end
 
 function send(freq)
@@ -53,76 +76,83 @@ function send(freq)
   io.sN(4,gY)
   io.sN(5,freq)
   io.sN(6,speed)
-  io.sN(7,headD)
+  io.sN(7,hdD)
+  for i=1,4 do
+    io.sN(7+i,n[i])
+  end
 end
 
-function receive()
+function rcv()
   rX,rY = io.gN(8),io.gN(9)
   rid = io.gN(10)
   rsp = io.gN(11)
   rhd = io.gN(12)
-  rname = io.gN(13)
   
-  if rid == 0 then --no input received on freq
-    if contacts[rxFreq] ~= nil then
-      contacts[rxFreq].age = contacts[rxFreq].age+1
-      if contacts[rxFreq].age > 500 then contacts[rxFreq] = nil end
+  if rid == 0 then
+    if cont[rxF] ~= nil then
+      cont[rxF].age = cont[rxF].age+1
+      if cont[rxF].age > 240 then cont[rxF] = nil end
     end
   else
-    if contacts[rid] == nil then
-      if rname == 0 then
-        addContact(rX,rY,rid,rsp,rhd)
-      else
-        addContact(rX,rY,rid,rsp,rhd,rname)
-      end
+    rname={io.gN(13),io.gN(14),io.gN(15),io.gN(16)}
+    if cont[rid] == nil then
+      addC(rX,rY,rid,rsp,rhd)
     else
-      updateContact(rid,rX,rY,rsp,rhd)
+      updC(rid,rX,rY,rsp,rhd)
     end
+    if rname[1] ~= 0 then cont[rid].name = dec(rname) end
   end
-  
-  incrementRX()
+  incrRX()
 end
 
-function incrementRX()
-  rxFreq = rxFreq+1
-  if rxFreq == txFreq then rxFreq = rxFreq+1 end
-  if rxFreq > 230 then rxFreq = 201 end
-  if rxFreq == txFreq then rxFreq = rxFreq+1 end
+function incrRX()
+  rxF = rxF+1
+  if rxF == txF then rxF = rxF+1 end
+  if rxF > 230 then rxF = 201 end
+  if rxF == txF then rxF = rxF+1 end
 end
 
-function isInteger(nr)
+function isInt(nr)
   return nr == math.floor(nr)
 end
 
-function updateContact(id,x,y,speed,hd)
-  contacts[id].x = x
-  contacts[id].y = y
-  contacts[id].speed = speed
-  contacts[id].hd = hd
-  contacts[id].age = 0
+function updC(id,x,y,speed,hd)
+  cont[id].x = x
+  cont[id].y = y
+  cont[id].speed = speed
+  cont[id].hd = hd
+  cont[id].age = 0
 end
 
-function addContact(x,y,id,speed,hd,name)
+function addC(x,y,id,speed,hd,name)
   local data = {
 		['x']=(x),
 		['y']=(y),
     ['id']=(id),
 		['speed']=(speed or 0),
 		['hd']=(hd or 0),
-		['name']=(name or "Unknown"),
+		['name']=(name or "UNK"),
     ['age']=(0)
 	}
-	contacts[id]=data
+	cont[id]=data
 end
 
 function init()
-  if not contacts then contacts={} end
+  if not cont then cont={} end
   center={x=w/2, y=h/2}
   f=h/32
   
-  if txFreq >= 201 and txFreq <= 230 then
+  deco={}
+  for i=0,9 do
+    deco[10+i]=string.format("%d",i)
+  end
+  for i=1,26 do
+    deco[19+i]=alphabet[i]
+  end
+  
+  if txF >= 201 and txF <= 230 then
     ini = true
-    if txFreq == 201 then rxFreq = 202 end
+    if txF == 201 then rxF = 202 end
   end
 end
 
@@ -135,26 +165,32 @@ function onDraw()
     if not ini then 
       s.dt(f,center.y-f,"Invalid ID")
     else
+      s.sc(80,0,0,150)
+      if h>64 and name then s.dt(4,h-7,"N: "..name) end
+      s.dt(center.x+4,h-6,string.format("ID%d",txF))
   
-      for k,c in pairs(contacts) do
-        drawX,drawY = m.ms(cX,cY,zoom,w,h,c.x,c.y)
-        if c.age <=1 then
+      for k,c in pairs(cont) do
+        dX,dY = m.ms(cX,cY,zoom,w,h,c.x,c.y)
+        if c.age <=2 then
           s.sc(0,70,0,200)
-        elseif c.age <= 30 then
+        elseif c.age <= 20 then
           s.sc(50,50,0,200)
         else
           s.sc(50,0,0,200)
         end
-        s.dr(drawX-1,drawY-1,2,2)
-        s.sc(160,160,160,100)
+        if dNames then 
+          s.dt(dX-#c.name*2,dY+4,c.name)
+        end
+        s.dr(dX-1,dY-1,2,2)
+        s.sc(120,120,120,200)
+        
         spV=c.speed/30
         spV=spV*(h*2/5)
         vX=math.sin(math.rad(c.hd))
         vY=math.cos(math.rad(c.hd))
         vX=vX*spV;vY=vY*spV
-        s.dl(drawX,drawY,drawX+vX,drawY-vY)
+        s.dl(dX,dY,dX+vX,dY-vY)
       end
-  
     end
   end
 end
