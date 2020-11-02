@@ -22,7 +22,7 @@ function onTick()
     toDeg(head)
     if wPb then
       t=bD(arr[1].x,arr[1].y)
-      if t.d<50 and ti>30 then
+      if t.d<50 then
         nWP=nWP-1
         for i=1,7 do
           arr[i].x=arr[i+1].x;arr[i].y=arr[i+1].y
